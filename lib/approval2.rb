@@ -1,5 +1,4 @@
 require "approval2/version"
-
-module Approval2
-  # Your code goes here...
-end
+require "approval2/controller_additions"
+require "approval2/model_additions"
+require 'approval2/active_record_adapter.rb'
