@@ -8,8 +8,6 @@ module Approval2
       before_filter :before_index, only: :index
     end
 
-    def approve
-    end
 
     private 
 
@@ -51,7 +49,6 @@ module Approval2
           raise ActiveRecord::Rollback
         end
       end
-      redirect_to x
     end    
   end
 end
