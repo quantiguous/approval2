@@ -28,7 +28,7 @@ Or install it yourself as:
 The gem provides a generator to get started
 
 ```ruby
-rails g migration approval2:install
+rails g approval2:install
 ```
 This creates a migration for unapproved_records, and its associated model & controller. This is used to keep track of all unapproved records across the application, and can be used to create an 'approval worklist'.
 

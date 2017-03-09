@@ -31,7 +31,7 @@ module Approval2
     end
 
     def approve
-      return "The record version is different from that of the approved version" if !self.approved_record.nil? and self.approved_version != self.approved_record.lock_version    
+       return "The record version is different from that of the approved version" if !self.approved_record.nil? and self.approved_version != self.approved_record.lock_version    
 
   #    make the U the A record, also assign the id of the A record, this looses history
   #    self.approval_status = 'A'
@@ -43,6 +43,7 @@ module Approval2
       if self.approved_record.nil?
         # create action, all we need to do is set the status to approved
         self.approval_status = 'A'
+        self.save!
       else
         # copy all attributes of the U record to the A record, and delete the U record
         attributes = self.attributes.select do |attr, value|
