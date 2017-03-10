@@ -51,10 +51,12 @@ All unique indexes on the model need to be modified to include 'approval_status'
 
 ### Create
 When a record is created, it has approval_status 'U', and a entry is added to unapproved_records. 
+
 When the record is approved, the approval_status is updated from 'U' to 'A' 
 
 ### Edit
-When a record is edited, a clone of the record is created. This clone has approval_status = 'U and the approved_version and approved_id is set to the id & lock_version of the record that was edited. This clone is persisted, and you now have 2 records in the table, one with approval_status = A (the record that was edited, but without any changes), and one with approval_status = U (the clone, with the changes applied). 
+When a record is edited, a clone of the record is created. This clone has approval_status = 'U and the approved_version and approved_id is set to the lock_version & id of the record that was edited. This clone is persisted, and you now have 2 records in the table, one with approval_status = A (the record that was edited, but without any changes), and one with approval_status = U (the clone, with the changes applied). 
+
 When the changes are approved, the record with approval_status = 'A' is deleted, and the approval_status of the cloned record is changed from 'U' to 'A'. To prevent buried updates, this is done only if the lock_version of the A record is still the same as the approved_version of the U record . ( It is expected that any application that updates such records increments lock_version whenever it updates an A record)
 
 

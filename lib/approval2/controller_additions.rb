@@ -53,6 +53,6 @@ module Approval2
   end
 end
 
-ActionController::Base.class_eval do
-  include Approval2::ControllerAdditions
-end
+# ActionController::Base.class_eval do
+  # include Approval2::ControllerAdditions
+# end
