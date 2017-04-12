@@ -43,27 +43,24 @@ module Approval2
       if self.approved_record.nil?
         # create action, all we need to do is set the status to approved
         self.approval_status = 'A'
-        self.save!
-      else
-        # copy all attributes of the U record to the A record, and delete the U record
-        attributes = self.attributes.select do |attr, value|
-          self.class.column_names.include?(attr.to_s) and 
-          ['id', 'approved_id', 'approval_status', 'lock_version', 'approved_version', 'created_at', 'updated_at', 'updated_by', 'created_by'].exclude?(attr)
-        end
-      
-        self.class.unscoped do
-          approved_record = self.approved_record
-          approved_record.assign_attributes(attributes)
-          approved_record.last_action = 'U'
-          approved_record.updated_by = self.created_by
-          self.destroy
-          # not enought time to test cases where the approval is being done after changes in validations of the model, such that the saving of the approved 
-          # record fails, this can be fixed to return the errors so that they can be shown to the user
-          approved_record.save!
-        end
+        return self
       end
-    
-      return ""
+
+      # edit action
+      # copy all attributes of the U record to the A record, and delete the U record
+      attributes = self.attributes.select do |attr, value|
+        self.class.column_names.include?(attr.to_s) and
+        ['id', 'approved_id', 'approval_status', 'lock_version', 'approved_version', 'created_at', 'updated_at', 'updated_by', 'created_by'].exclude?(attr)
+      end
+
+      self.class.unscoped do
+        approved_record = self.approved_record
+        approved_record.assign_attributes(attributes)
+        approved_record.last_action = 'U'
+        approved_record.updated_by = self.created_by
+        self.destroy
+        return approved_record
+      end    
     end
 
     def enable_approve_button?

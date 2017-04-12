@@ -38,13 +38,13 @@ module Approval2
       modelName = self.class.name.sub("Controller", "").underscore.split('/').last.singularize
       modelKlass = modelName.classify.constantize
 
-      x = modelKlass.unscoped.find(params[:id]) rescue nil
+      x = modelKlass.unscoped.find(params[:id])
       modelKlass.transaction do
-        approval = x.approve
-        if approval.empty?
+        approved_record = x.approve
+        if approved_record.save
           flash[:alert] = "#{modelName.humanize.titleize} record was approved successfully"
         else
-          msg = x.errors.full_messages << approval
+          msg = approved_record.errors.full_messages
           flash[:alert] = msg
           raise ActiveRecord::Rollback
         end
