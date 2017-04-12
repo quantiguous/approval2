@@ -3,9 +3,9 @@ module Approval2
     extend ActiveSupport::Concern
 
     included do
-      before_filter :before_edit, only: :edit
-      before_filter :before_approve, only: :approve
-      before_filter :before_index, only: :index
+      before_action :before_edit, only: :edit
+      before_action :before_approve, only: :approve
+      before_action :before_index, only: :index
     end
 
 
