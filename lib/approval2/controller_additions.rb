@@ -10,21 +10,24 @@ module Approval2
 
 
     private 
+    
+    def modelName
+      self.class.name.sub("Controller", "").underscore.split('/').last.singularize
+    end
+    
+    def modelKlass
+      moduleName = self.class.name.include?("::") ? self.class.name.split("::").first : ""
+      "#{moduleName}::#{modelName.classify}".constantize
+    end
 
     def before_index
-      if (params[:approval_status].present? and params[:approval_status] == 'U')      
-        modelName = self.class.name.sub("Controller", "").underscore.split('/').last.singularize
-        modelKlass = modelName.classify.constantize
-
+      if (params[:approval_status].present? and params[:approval_status] == 'U') 
         x = modelKlass.unscoped.where("approval_status =?",'U').order("id desc")
         instance_variable_set("@#{modelName}s", x.paginate(:per_page => 10, :page => params[:page]))
       end
     end
 
     def before_edit
-      modelName = self.class.name.sub("Controller", "").underscore.split('/').last.singularize
-      modelKlass = modelName.classify.constantize
-
       x = modelKlass.unscoped.find_by_id(params[:id])
       if x.approval_status == 'A' && x.unapproved_record.nil?
         params = (x.attributes).merge({:approved_id => x.id,:approved_version => x.lock_version})
@@ -35,9 +38,6 @@ module Approval2
     end
 
     def before_approve
-      modelName = self.class.name.sub("Controller", "").underscore.split('/').last.singularize
-      modelKlass = modelName.classify.constantize
-
       x = modelKlass.unscoped.find(params[:id])
       modelKlass.transaction do
         approved_record = x.approve

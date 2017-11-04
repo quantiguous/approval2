@@ -9,8 +9,8 @@ module Approval2
       has_one :unapproved_record_entry, :as => :approvable, :class_name => '::UnapprovedRecord'
  
       # refers to the approved/unapproved record in the model
-      belongs_to :unapproved_record, :primary_key => 'approved_id', :foreign_key => 'id', :class_name => self.name, :unscoped => true
-      belongs_to :approved_record, :foreign_key => 'approved_id', :primary_key => 'id', :class_name => self.name, :unscoped => true
+      belongs_to :unapproved_record,  -> { unscoped }, :primary_key => 'approved_id', :foreign_key => 'id', :class_name => self.name
+      belongs_to :approved_record,  -> { unscoped }, :foreign_key => 'approved_id', :primary_key => 'id', :class_name => self.name
 
       validates_uniqueness_of :approved_id, :allow_blank => true
       validate :validate_unapproved_record
