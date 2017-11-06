@@ -48,6 +48,7 @@ module Approval2
           flash[:alert] = msg
           raise ActiveRecord::Rollback
         end
+        instance_variable_set("@#{modelName}", approved_record)
       end
     end    
   end

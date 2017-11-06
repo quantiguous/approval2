@@ -24,4 +24,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_dependency "audited"
   spec.add_dependency "will_paginate"
+  spec.add_dependency "unscoped_associations"
 end
