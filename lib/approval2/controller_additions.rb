@@ -23,7 +23,7 @@ module Approval2
     def before_index
       if (params[:approval_status].present? and params[:approval_status] == 'U') 
         x = modelKlass.unscoped.where("approval_status =?",'U').order("id desc")
-        instance_variable_set("@#{modelName}s", x.paginate(:per_page => 10, :page => params[:page]))
+        instance_variable_set("@#{modelName}s", x)
       end
     end
 
