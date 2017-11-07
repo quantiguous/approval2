@@ -42,13 +42,14 @@ module Approval2
       modelKlass.transaction do
         approved_record = x.approve
         if approved_record.save
+          instance_variable_set("@#{modelName}", approved_record)
           flash[:alert] = "#{modelName.humanize.titleize} record was approved successfully"
         else
           msg = approved_record.errors.full_messages
           flash[:alert] = msg
+          instance_variable_set("@#{modelName}", x)
           raise ActiveRecord::Rollback
         end
-        instance_variable_set("@#{modelName}", approved_record)
       end
     end    
   end
