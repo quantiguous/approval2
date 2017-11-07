@@ -9,16 +9,13 @@ module Approval2
       has_one :unapproved_record_entry, :as => :approvable, :class_name => '::UnapprovedRecord'
  
       # refers to the approved/unapproved record in the model
-      belongs_to :unapproved_record, :primary_key => 'approved_id', :foreign_key => 'id', :class_name => self.name, :unscoped => true
-      belongs_to :approved_record, :foreign_key => 'approved_id', :primary_key => 'id', :class_name => self.name, :unscoped => true
+      belongs_to :unapproved_record, -> { unscope(where: :approval_status) }, :primary_key => 'approved_id', :foreign_key => 'id', :class_name => self.name
+      belongs_to :approved_record, -> { unscope(where: :approval_status) }, :foreign_key => 'approved_id', :primary_key => 'id', :class_name => self.name
 
       validates_uniqueness_of :approved_id, :allow_blank => true
       validate :validate_unapproved_record
 
-      def self.default_scope
-        where approval_status: 'A'
-      end
-
+      default_scope { where('approval_status = ?', 'A') }
 
       after_create :on_create_create_unapproved_record_entry
       after_destroy :on_destory_remove_unapproved_record_entries
@@ -67,7 +64,7 @@ module Approval2
       self.approval_status == 'U' ? true : false
     end
 
-      def on_create_create_unapproved_record_entry
+    def on_create_create_unapproved_record_entry
       if approval_status == 'U'
         UnapprovedRecord.create!(:approvable => self)
       end
