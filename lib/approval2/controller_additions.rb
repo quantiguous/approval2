@@ -6,6 +6,16 @@ module Approval2
       before_filter :before_edit, only: :edit
       before_filter :before_approve, only: :approve
       before_filter :before_index, only: :index
+      
+      def reject
+        modelName = self.class.name.sub("Controller", "").underscore.split('/').last.singularize
+        modelKlass = modelName.classify.constantize        
+        x = modelKlass.unscoped.find(params[:id])
+        x.destroy if x.can_destroy?
+        flash[:alert] = "The unapproved record has been deleted"
+        redirect_to unapproved_records_path(group_name: params[:group_name])
+      end
+      
     end
 
 
@@ -50,6 +60,9 @@ module Approval2
         end
       end
     end    
+    
+  
+  
   end
 end
 
