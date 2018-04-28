@@ -5,6 +5,10 @@ module Approval2
     included do
       audited except: [:approval_status, :last_action]
  
+      default_scope { where(approval_status: 'A') }
+
+      after_initialize { self.approval_status = 'U' if new_record? }
+
       # refers to the unapproved record in the common unapproved_record model, this is true only for U records
       has_one :unapproved_record_entry, :as => :approvable, :class_name => '::UnapprovedRecord'
  
@@ -15,7 +19,6 @@ module Approval2
       validates_uniqueness_of :approved_id, :allow_blank => true
       validate :validate_unapproved_record
 
-      default_scope { where('approval_status = ?', 'A') }
 
       after_create :on_create_create_unapproved_record_entry
       after_destroy :on_destory_remove_unapproved_record_entries
