@@ -6,10 +6,29 @@ module Approval2
       before_filter :before_edit, only: :edit
       before_filter :before_approve, only: :approve
       before_filter :before_index, only: :index
+      
+      def reject
+        modelName = self.class.name.sub("Controller", "").underscore.split('/').last.singularize
+        modelKlass = modelName.classify.constantize        
+        x = modelKlass.unscoped.find(params[:id])
+        x.destroy if x.can_destroy?
+        flash[:alert] = "The unapproved record has been deleted"
+        redirect_with_params
+      end
+      
     end
 
 
     private 
+    
+    # apps can provide redirect params via a known session variable
+    def redirect_with_params
+      if session[:approval2_redirect_params].present?
+        redirect_to unapproved_records_path(session[:approval2_redirect_params])
+      else
+        redirect_to unapproved_records_path
+      end
+    end
 
     def before_index
       if (params[:approval_status].present? and params[:approval_status] == 'U')      
@@ -50,6 +69,9 @@ module Approval2
         end
       end
     end    
+    
+  
+  
   end
 end
 

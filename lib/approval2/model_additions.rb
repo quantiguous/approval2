@@ -62,12 +62,19 @@ module Approval2
         return approved_record
       end    
     end
+    
+    def can_destroy?
+      # only unaproved records are allowed to be destroyed
+      self.approval_status == 'U'
+    end
+    
+    alias_method :enable_reject_button?, :can_destroy?
 
     def enable_approve_button?
       self.approval_status == 'U' ? true : false
     end
 
-      def on_create_create_unapproved_record_entry
+    def on_create_create_unapproved_record_entry
       if approval_status == 'U'
         UnapprovedRecord.create!(:approvable => self)
       end
