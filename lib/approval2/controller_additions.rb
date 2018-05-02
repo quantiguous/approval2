@@ -13,13 +13,22 @@ module Approval2
         x = modelKlass.unscoped.find(params[:id])
         x.destroy if x.can_destroy?
         flash[:alert] = "The unapproved record has been deleted"
-        redirect_to unapproved_records_path(group_name: params[:group_name])
+        redirect_with_params
       end
       
     end
 
 
     private 
+    
+    # apps can provide redirect params via a known session variable
+    def redirect_with_params
+      if session[:approval2_redirect_params].present?
+        redirect_to unapproved_records_path(session[:approval2_redirect_params])
+      else
+        redirect_to unapproved_records_path
+      end
+    end
 
     def before_index
       if (params[:approval_status].present? and params[:approval_status] == 'U')      

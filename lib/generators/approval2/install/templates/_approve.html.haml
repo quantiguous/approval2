@@ -1,4 +1,3 @@
-- group_name = local_assigns[:group_name] || ''
 - reject_url = polymorphic_path(@record, :action => 'reject') rescue nil
 - can = can? :approve, @record
 - approve_flag = @record.enable_approve_button?
@@ -21,9 +20,7 @@
     %h3#myModalLabel  Acknowledge Rejection
     #error_message{:style => 'color:red'}
   .modal-body
-    = form_tag reject_url, :method => :put do |ef|
-      = hidden_field_tag :group_name,  group_name
-      = submit_tag "Confirm", :class=>"btn btn-primary transition_button"
+    = link_to 'Confirm', reject_url, method: :put, :class=>"btn btn-primary transition_button"
 %p{:style => 'color:green;'}
   = created_or_edited_by(@record)
 %br
